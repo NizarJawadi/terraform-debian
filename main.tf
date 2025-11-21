@@ -21,6 +21,14 @@ resource "azurerm_subnet" "subnet" {
   address_prefixes     = ["10.0.1.0/24"]
 }
 
+# Ajout d'une IP publique
+resource "azurerm_public_ip" "public_ip" {
+  name                = "${var.vm_name}-public-ip"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method   = "Dynamic"
+}
+
 resource "azurerm_network_interface" "nic" {
   name                = "${var.vm_name}-nic"
   location            = azurerm_resource_group.rg.location
@@ -30,6 +38,7 @@ resource "azurerm_network_interface" "nic" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id           = azurerm_public_ip.public_ip.id # <-- liaison avec IP publique
   }
 }
 
@@ -56,3 +65,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 }
 
+output "vm_public_ip" {
+  value       = azurerm_public_ip.public_ip.ip_address
+  description = "Public IP of the VM"
+}
