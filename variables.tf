@@ -8,9 +8,3 @@ variable "vm_size" {
   type        = string
   default     = "Standard_B1s"
 }
-
-variable "admin_password" {
-  description = "Admin password for VM"
-  type        = string
-  default     = "P@ssw0rd1234!"  # Tu peux passer via tfvars
-}
